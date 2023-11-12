@@ -1,19 +1,23 @@
+import 'dart:math';
+
+import 'package:hive/hive.dart';
+
+part 'note.g.dart';
+
+@HiveType(typeId: 1)
 class Note {
-  final int id;
-  final String text;
+  @HiveField(0)
+  int id;
+
+  @HiveField(1)
+  String text;
 
   Note({
     required this.id,
     required this.text,
   });
 
-  Note copyWith({
-    String? text,
-    int? id,
-  }) {
-    return Note(
-      id : id ?? this.id,
-      text : text ?? this.text,
-    );
-  }
+  Note.init({
+    required this.text,
+  }) : id = Random().nextInt(100000);
 }

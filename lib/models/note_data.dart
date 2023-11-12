@@ -1,33 +1,36 @@
+import 'package:flutter/foundation.dart';
+import 'package:simple_notes/data/hive_database.dart';
+
 import 'note.dart';
 
-class NoteData {
-  // overall list of notes
-  List<Note> allNotes = [
-    Note(id: 0, text: "First note"),
-    Note(id: 0, text: "First note"),
-  ];
+class NoteData extends ChangeNotifier {
+  final db = HiveDatabase();
 
-  // get notes
+  void init() {
+    allNotes = db.loadNotes();
+  }
+
+  List<Note> allNotes = [];
+
   List<Note> getAllNotes() {
     return allNotes;
   }
 
-  // add a new note
   void addNewNote(Note note) {
     allNotes.add(note);
+    db.saveNotes(allNotes);
+    notifyListeners();
   }
 
-  // update note
   void updateNote(Note noteToUpdate, String text) {
-    for (final note in allNotes) {
-      if (note.id == noteToUpdate.id) {
-        note.copyWith(text: noteToUpdate.text);
-      }
-    }
+    allNotes.firstWhere((element) => element == noteToUpdate).text = text;
+    db.saveNotes(allNotes);
+    notifyListeners();
   }
 
-  // delete note
   void deleteNote(Note note) {
     allNotes.remove(note);
+    db.saveNotes(allNotes);
+    notifyListeners();
   }
 }
